@@ -1,0 +1,33 @@
+﻿
+-- предполагаем, что в БД созданы таблицы
+
+create table tblProducts(
+ProductID int identity(1,1) not null
+	primary key,
+Title nvarchar(200) not null
+);
+
+create table tblCategories(
+CategoryID int identity(1,1) not null
+	primary key,
+Title nvarchar(40) not null
+	unique
+);
+
+create table tblProducts_Categories(
+ProductCategoryID int identity(1,1) not null
+	primary key,
+ProductID int not null
+	foreign key references tblProducts(ProductID),
+CategoryID int not null
+	foreign key references tblCategories(CategoryID)
+constraint u_ProductCategory unique(ProductID, CategoryID)
+);
+
+-- тогда запрос будет вида
+select p.Title, c.Title
+from tblProducts as p
+left join tblProducts_Categories as pc
+	on p.ProductID = pc.ProductID
+left join tblCategories as c
+	on c.CategoryID = pc.CategoryID;
